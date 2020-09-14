@@ -74,7 +74,7 @@ Primeiro clonamos o projeto:
 
 ~~~bash
 git clone https://github.com/Marquesledivan/kubernetes-vagrant-ansible
-cd kubernetes-vagrant
+cd kubernetes-vagrant-ansible
 ~~~
 
 # 2. Montando o cluster
