@@ -1,0 +1,2 @@
+default_kubernetes_cni_manifestUrl: "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+###default_kubernetes_cni_manifestUrl: "https://docs.projectcalico.org/manifests/calico.yaml"

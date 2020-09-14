@@ -1,0 +1,7 @@
+- name: "Kubeadmn reset node cluster config"
+  command: >
+    kubeadm reset --force
+
+- name: "Kubeadmn join"
+  shell: >
+    curl -u ledivan:123 http://192.168.7.10/ | bash

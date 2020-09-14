@@ -1,0 +1,7 @@
+---
+php_packages_debian:
+    - kubelet
+    - kubeadm
+    - kubectl
+    - helm
+    - bash-completion

@@ -1,0 +1,34 @@
+- name: Check if Package is installed
+  shell: dpkg-query -W -f='${Status}' nginx | grep 'install ok installed'
+  register: is_installed
+  failed_when: no
+  changed_when: no
+
+- name: config file htpasswd
+  copy:
+    src: htpasswd
+    dest: /etc/nginx/.htpasswd
+    owner: root
+    group: root
+  when: is_installed.rc == 0
+  notify: restart_nginx
+
+- name: config file nginx.conf
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+  when: is_installed.rc == 0
+  notify: restart_nginx
+
+- name: Enable kubectl Autocompletion
+  shell:
+    kubectl completion bash > /etc/bash_completion.d/kubectl
+
+- name: Configure node ip
+  copy:
+    dest: "/etc/default/kubelet"
+    content: |
+       KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+  notify: restart_kubelet

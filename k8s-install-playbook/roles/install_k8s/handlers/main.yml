@@ -1,0 +1,26 @@
+---
+- name: restart docker
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+  listen: restart_docker
+
+- name: restart nginx
+  service:
+    name: nginx.service
+    state: restarted
+    enabled: yes
+  listen: restart_nginx
+
+- name: Restart kubelet
+  service:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+  listen: restart_kubelet
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  listen: systemd_reload
+

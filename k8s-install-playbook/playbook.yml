@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: yes
+  user: root
+  gather_facts: no
+  pre_tasks:
+  - name: 'install python'
+    raw: 'apt-get update && apt-get -y install python && apt-get -y install nginx && apt-get install apt-transport-https --yes'
+  roles:
+  - install_k8s
+
+- hosts: all
+  become: yes
+  user: root
+  roles:
+  - create-cluster

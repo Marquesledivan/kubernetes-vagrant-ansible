@@ -1,0 +1,83 @@
+- name: Download Docker
+  get_url:
+    url: https://get.docker.com
+    dest: /tmp/installer.sh
+    mode: 0755
+
+- name: Install Docker
+  shell: /tmp/installer.sh
+
+- name: Change file ownership, group and permissions
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+    owner: root
+    group: root
+    recurse: yes
+  notify: systemd_reload
+
+- name: config file
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+  notify: restart_docker
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+     - swap
+     - none
+
+- name: Disable swap
+  command: swapoff -a
+
+- name: Add the module
+  modprobe: name={{ item }} state=present
+  with_items:
+    - br_netfilter
+    - overlay
+    - bridge
+
+- name: setup kernel parameters for k8s - reboot might be required, but we will not trigger
+  sysctl: name={{item.name}} value={{item.value}} state=present
+  with_items:
+    - {name:  "net.bridge.bridge-nf-call-iptables", value: "1" }
+    - {name:  "net.bridge.bridge-nf-call-ip6tables", value: "1" }
+    - {name:  "net.ipv4.ip_forward", value: "1" }
+    - {name:  "net.ipv4.ip_nonlocal_bind", value: "1" }
+
+- name: every reboot load bridge kernel modules
+  copy:
+    dest: "/etc/modules-load.d/k8s_bridge.conf"
+    content: |
+      br_netfilter
+      overlay
+      bridge
+
+- name: setup kernel parameters - reboot might be required, but we will not trigger
+  sysctl: name={{item.name}} value={{item.value}} state=present
+  with_items:
+    - {name:  "vm.max_map_count", value: "262144" }
+
+- name: Add helm Apt signing key
+  apt_key: url={{ item }} state=present
+  with_items:
+    - https://baltocdn.com/helm/signing.asc
+    - https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+- name: Add K8s repository
+  apt_repository: repo={{ item }}  state=present
+  with_items:
+    - deb http://apt.kubernetes.io/ kubernetes-xenial main
+    - deb https://baltocdn.com/helm/stable/debian/ all main
+
+- name: Install k8s packages
+  apt:
+    name: "{{ php_packages_debian }}"
+  notify: restart_kubelet
+

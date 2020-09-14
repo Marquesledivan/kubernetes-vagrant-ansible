@@ -1,0 +1,2 @@
+IP_MASTER: 192.168.7.10
+PATH_NGINX: /var/www/html/index.nginx-debian.html

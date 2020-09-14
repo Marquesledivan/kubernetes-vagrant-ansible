@@ -1,0 +1,5 @@
+.vagrant
+.vscode
+virtualbox.box
+config
+kubernetes-vagrant-config
