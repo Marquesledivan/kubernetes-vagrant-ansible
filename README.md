@@ -64,7 +64,6 @@ vagrant plugin uninstall vagrant-share
 vagrant plugin uninstall vagrant-cachier
 vagrant plugin uninstall vagrant-hostmanager
 vagrant plugin uninstall vagrant-vbguest
-
 vagrant plugin install vagrant-cachier
 vagrant plugin install vagrant-vbguest
 ~~~
