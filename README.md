@@ -127,8 +127,6 @@ export KUBECONFIG=$PWD/kubernetes-vagrant-config
 
 kubectl get pods -A
 
-kubectl config use-context k8s@vagrant
-
 ~~~
 
 # 4. Desligando ou reiniciando
