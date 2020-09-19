@@ -121,6 +121,14 @@ vagrant ssh k8smaster -c "kubectl label node k8snode2 node-role.kubernetes.io/no
 Copiar arquivo de configuração do nó master para a pasta compartilhada
 
 ~~~bash
+rm -f ./kubernetes-vagrant-config
+
+vagrant ssh k8smaster -c "mkdir -p /home/vagrant/.kube"
+
+vagrant ssh k8smaster -c "sudo cp -rf /etc/kubernetes/admin.conf /home/vagrant/.kube/config"
+
+vagrant ssh k8smaster -c "sudo chown vagrant:vagrant /home/vagrant/.kube/config"
+
 vagrant ssh k8smaster -c "cp ~/.kube/config /vagrant/kubernetes-vagrant-config"
 
 export KUBECONFIG=$PWD/kubernetes-vagrant-config

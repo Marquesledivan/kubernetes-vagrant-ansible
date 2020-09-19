@@ -1,3 +1,5 @@
 ---
 K8S_MASTER_NODE_IP: 192.168.7.10
 K8S_API_SERCURE_PORT: 6443
+vault_url: http://192.168.15.50:8200/v1/kv/kubernetes
+token_repo: s.ggEnRVXXkY0CvkzyUjl8w4uW

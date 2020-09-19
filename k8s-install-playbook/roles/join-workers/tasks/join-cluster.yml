@@ -2,6 +2,16 @@
   command: >
     kubeadm reset --force
 
+- name: Get Vault User
+  shell: |
+       curl -H "X-Vault-Token: {{ token_repo }}" -X GET {{ vault_url }} | python -c 'import sys, json; print json.load(sys.stdin)["data"]["user"]'
+  register: get_vault_user
+
+- name: Get Vault Passwd
+  shell: |
+        curl -H "X-Vault-Token: {{ token_repo }}" -X GET {{ vault_url }} | python -c 'import sys, json; print json.load(sys.stdin)["data"]["passwd"]'
+  register: get_vault_passwd
+
 - name: "Kubeadmn join"
   shell: >
-    curl -u ledivan:123 http://192.168.7.10/ | bash
+    curl -u {{ get_vault_user.stdout }}:{{ get_vault_passwd.stdout }} http://{{ K8S_MASTER_NODE_IP }}/ | bash
